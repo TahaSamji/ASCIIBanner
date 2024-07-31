@@ -45,7 +45,7 @@ function App() {
   const GetFonts = async () => {
     try {
       const res = await axios({
-        url: "http://localhost:8000",
+        url: "https://ascii-banner-backend-murex.vercel.app",
         method: "get",
       });
       if (res.data.data) {
@@ -70,7 +70,7 @@ function App() {
   const convert = async (textOptions) => {
     try {
       const res = await axios({
-        url: "http://localhost:8000/convertText",
+        url: "https://ascii-banner-backend-murex.vercel.app/convertText",
         method: "post",
         data: { textOptions }
       });
