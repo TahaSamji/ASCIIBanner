@@ -70,8 +70,8 @@ function App() {
   const GetFonts = async () => {
     try {
       const res = await axios({
-        // url: "https://ascii-banner-backend-murex.vercel.app",
-        url: "http://localhost:8000",
+        url: "https://ascii-banner-backend-murex.vercel.app",
+        // url: "http://localhost:8000",
         method: "get",
       });
       if (res.data.data) {
@@ -107,8 +107,8 @@ function App() {
   const convert = async (textOptions) => {
     try {
       const res = await axios({
-        // url: "https://ascii-banner-backend-murex.vercel.app/convertText",
-        url: "http://localhost:8000/convertText",
+        url: "https://ascii-banner-backend-murex.vercel.app/convertText",
+        // url: "http://localhost:8000/convertText",
         method: "post",
         data: { textOptions }
       });
