@@ -2,7 +2,6 @@ import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { ColorPicker, useColor } from "react-color-palette";
 import "react-color-palette/css";
-import downloadjs from 'downloadjs';
 import html2canvas from 'html2canvas';
 
 function App() {
@@ -71,7 +70,6 @@ function App() {
     try {
       const res = await axios({
         url: "https://ascii-banner-backend-murex.vercel.app",
-        // url: "http://localhost:8000",
         method: "get",
       });
       if (res.data.data) {
@@ -89,14 +87,8 @@ function App() {
     convert(textOptions);
   }, [textOptions]);
 
-  useEffect(() => {
-    console.log(color);
-  }, [color]);
 
-  useEffect(() => {
-    console.log(DivRef.current.offsetHeight, fontSize)
 
-  }, [textOptions, fontSize]);
 
   useEffect(() => {
     GetFonts();
@@ -108,7 +100,6 @@ function App() {
     try {
       const res = await axios({
         url: "https://ascii-banner-backend-murex.vercel.app/convertText",
-        // url: "http://localhost:8000/convertText",
         method: "post",
         data: { textOptions }
       });
@@ -124,36 +115,35 @@ function App() {
   };
 
   const handleCaptureClick = async () => {
-    if (DivRef) {
-      const canvas = await html2canvas(DivRef.current);
-      const dataURL = canvas.toDataURL('image/png');
-      downloadjs(dataURL, 'download.png', 'image/png');
+    if (DivRef.current) {
+ 
+      const canvas = await html2canvas(DivRef.current, {
+        backgroundColor: null 
+      });
+  
+      const dataURL = canvas.toDataURL('image/jpeg');
+      const a = document.createElement('a');
+      a.href = dataURL;
+      a.download = 'Image.jpeg';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+  
+      document.documentElement.style.overflow = "auto";
     }
   };
+  
 
-
-  // const handleDownload = () => {
-  //   const canvas = canvasRef.current;
-  //   if (canvas) {
-  //     const dataURL = canvas.toDataURL("image/png");
-  //     const a = document.createElement('a');
-  //     a.href = dataURL;
-  //     a.download = 'EnlargedImage.png';
-  //     document.body.appendChild(a);
-  //     a.click();
-  //     document.body.removeChild(a);
-  //   }
-  // }; 
 
 
   return (
-    <div style={{ width: "100vw", height: "100vh", overflowY: 'auto' }}>
+    <div style={{ width: "100vw", height: "100vh", overflowY: 'auto',backgroundColor:'white' }}>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         <h1>ASCII BANNER GENERATOR</h1>
         <div style={{ marginBottom: 20 }}>
           <label style={{ display: 'flex', flexDirection: 'column' }}>
             Write your Text:
-            <textarea defaultValue={textOptions.text} name="text" value={textOptions.text} onChange={handleChange} style={{ marginRight: 10, marginLeft: 10 }} rows={4} cols={30} ></textarea>
+            <textarea defaultValue={textOptions.text} name="text" value={textOptions.text} onChange={handleChange} style={{ marginRight: 10, marginLeft: 10 }} rows={4} cols={30} draggable={'false'}></textarea>
           </label>
 
 
@@ -223,7 +213,7 @@ function App() {
             </div>
           </div>
           <div>
-            <div className="Mybanner" ref={DivRef} style={{ backgroundColor: color.hex, color: fgcolor.hex, padding: 15 }}>
+            <div className="Mybanner" ref={DivRef} style={{ backgroundColor: color.hex, color: fgcolor.hex, padding: 10 }}>
               <pre style={{ fontSize: fontSize }} >{newText}</pre>
             </div>
           </div>
