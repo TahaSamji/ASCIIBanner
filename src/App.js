@@ -130,7 +130,7 @@ function App() {
       downloadjs(dataURL, 'download.png', 'image/png');
     }
   };
- 
+
 
   // const handleDownload = () => {
   //   const canvas = canvasRef.current;
@@ -151,6 +151,12 @@ function App() {
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         <h1>ASCII BANNER GENERATOR</h1>
         <div style={{ marginBottom: 20 }}>
+          <label style={{ display: 'flex', flexDirection: 'column' }}>
+            Write your Text:
+            <textarea defaultValue={textOptions.text} name="text" value={textOptions.text} onChange={handleChange} style={{ marginRight: 10, marginLeft: 10 }} rows={4} cols={30} ></textarea>
+          </label>
+
+
           fonts: <select defaultValue={textOptions.font} name="font" onChange={handleChange} >
             <option value="" disabled>Select an option</option>
             <option value={textOptions.font} >Ghost</option>
@@ -160,8 +166,6 @@ function App() {
               </option>
             ))}
           </select>
-          Text:<input defaultValue={textOptions.text} name='text' value={textOptions.text} onChange={handleChange} type='text' style={{ marginRight: 10, marginLeft: 10 }} />
-
         </div>
         <div style={{ marginBottom: 15 }}>
           Horizontal Layout:
@@ -186,16 +190,16 @@ function App() {
           <input type='number' defaultValue={textOptions.width} name="width" onChange={handleChange} style={{ marginRight: 20 }} >
           </input>
           WhiteSpaceBreak:
-          <select style={{marginRight:10}} defaultValue={textOptions.whitespaceBreak} name="whitespaceBreak" onChange={handleSpaceChange} >
+          <select style={{ marginRight: 10 }} defaultValue={textOptions.whitespaceBreak} name="whitespaceBreak" onChange={handleSpaceChange} >
             <option value="On">On</option>
             <option value="Off">Off</option>
           </select>
-     
 
-          Font size : <input type='number' defaultValue={fontSize} name="imgheight" onChange={(e) => setfontSize(Number(e.target.value))} style={{ marginRight: 20, marginBottom: 20 }} >
+
+          Font size : <input type='number' defaultValue={fontSize} name="imgheight" onChange={(e) => setfontSize(Number(e.target.value))} style={{ marginRight: 20, marginBottom: 20 }}>
 
           </input>
-      
+
         </div>
         <div style={{ marginBottom: 20 }}>
           Select Background Color : <button onClick={() => handlebgColorPick()}>Pick</button>
@@ -219,13 +223,13 @@ function App() {
             </div>
           </div>
           <div>
-            <div className="Mybanner" ref={DivRef} style={{ backgroundColor: color.hex, color: fgcolor.hex, padding: 15}}>
-              <pre style={{fontSize:fontSize}} >{newText}</pre>
+            <div className="Mybanner" ref={DivRef} style={{ backgroundColor: color.hex, color: fgcolor.hex, padding: 15 }}>
+              <pre style={{ fontSize: fontSize }} >{newText}</pre>
             </div>
           </div>
         </div>
         <div>
-         <button style={{marginTop:10}}onClick={() => handleCaptureClick()}>Download</button>
+          <button style={{ marginTop: 10 }} onClick={() => handleCaptureClick()}>Download</button>
         </div>
 
       </div>
