@@ -18,13 +18,19 @@ function App() {
   const [fgcolor, setfgColor] = useColor("#ffffff");
   const [ChoosebgColor, SetChoosebgColor] = useState(false);
   const [ChoosefgColor, SetChoosefgColor] = useState(false);
-  
-  const handlebgColorPick = function(){
+  const [fontSize, setfontSize] = useState(15);
+
+
+  const handlebgColorPick = function () {
     SetChoosebgColor(true);
     SetChoosefgColor(false);
   }
+  const handleClose = function () {
+    SetChoosebgColor(false);
+    SetChoosefgColor(false);
+  }
 
-  const handlefgColorPick = function(){
+  const handlefgColorPick = function () {
     SetChoosefgColor(true);
     SetChoosebgColor(false);
   }
@@ -32,6 +38,7 @@ function App() {
   const [newText, setNewText] = useState("");
   const [fonts, setFonts] = useState([]);
   const DivRef = useRef();
+
 
   const handleSpaceChange = (event) => {
     const { name, value } = event.target;
@@ -63,8 +70,8 @@ function App() {
   const GetFonts = async () => {
     try {
       const res = await axios({
-        url: "https://ascii-banner-backend-murex.vercel.app",
-        // url: "http://localhost:8000",
+        // url: "https://ascii-banner-backend-murex.vercel.app",
+        url: "http://localhost:8000",
         method: "get",
       });
       if (res.data.data) {
@@ -87,6 +94,11 @@ function App() {
   }, [color]);
 
   useEffect(() => {
+    console.log(DivRef.current.offsetHeight, fontSize)
+
+  }, [textOptions, fontSize]);
+
+  useEffect(() => {
     GetFonts();
     convert(textOptions);
   }, []);
@@ -95,8 +107,8 @@ function App() {
   const convert = async (textOptions) => {
     try {
       const res = await axios({
-        url: "https://ascii-banner-backend-murex.vercel.app/convertText",
-        // url: "http://localhost:8000/convertText",
+        // url: "https://ascii-banner-backend-murex.vercel.app/convertText",
+        url: "http://localhost:8000/convertText",
         method: "post",
         data: { textOptions }
       });
@@ -112,12 +124,27 @@ function App() {
   };
 
   const handleCaptureClick = async () => {
-    if(DivRef){
-    const canvas = await html2canvas(DivRef.current);
-    const dataURL = canvas.toDataURL('image/png');
-    downloadjs(dataURL, 'download.png', 'image/png');
+    if (DivRef) {
+      const canvas = await html2canvas(DivRef.current);
+      const dataURL = canvas.toDataURL('image/png');
+      downloadjs(dataURL, 'download.png', 'image/png');
     }
   };
+ 
+
+  // const handleDownload = () => {
+  //   const canvas = canvasRef.current;
+  //   if (canvas) {
+  //     const dataURL = canvas.toDataURL("image/png");
+  //     const a = document.createElement('a');
+  //     a.href = dataURL;
+  //     a.download = 'EnlargedImage.png';
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     document.body.removeChild(a);
+  //   }
+  // }; 
+
 
   return (
     <div style={{ width: "100vw", height: "100vh", overflowY: 'auto' }}>
@@ -134,7 +161,7 @@ function App() {
             ))}
           </select>
           Text:<input defaultValue={textOptions.text} name='text' value={textOptions.text} onChange={handleChange} type='text' style={{ marginRight: 10, marginLeft: 10 }} />
-         
+
         </div>
         <div style={{ marginBottom: 15 }}>
           Horizontal Layout:
@@ -159,35 +186,48 @@ function App() {
           <input type='number' defaultValue={textOptions.width} name="width" onChange={handleChange} style={{ marginRight: 20 }} >
           </input>
           WhiteSpaceBreak:
-          <select defaultValue={textOptions.whitespaceBreak} name="whitespaceBreak" onChange={handleSpaceChange} >
+          <select style={{marginRight:10}} defaultValue={textOptions.whitespaceBreak} name="whitespaceBreak" onChange={handleSpaceChange} >
             <option value="On">On</option>
             <option value="Off">Off</option>
           </select>
+     
+
+          Font size : <input type='number' defaultValue={fontSize} name="imgheight" onChange={(e) => setfontSize(Number(e.target.value))} style={{ marginRight: 20, marginBottom: 20 }} >
+
+          </input>
+      
         </div>
         <div style={{ marginBottom: 20 }}>
-          Select Background Color : <button onClick={() => handlebgColorPick() }>Pick</button>
+          Select Background Color : <button onClick={() => handlebgColorPick()}>Pick</button>
         </div>
         <div style={{ marginBottom: 20 }}>
-          Select Foreground Color : <button onClick={() => handlefgColorPick() }>Pick</button>
+          Select Foreground Color : <button onClick={() => handlefgColorPick()}>Pick</button>
         </div>
+        {(ChoosebgColor || ChoosefgColor) && <div style={{ marginBottom: 20 }}>
+          Close color picker : <button onClick={() => handleClose()}>close</button>
+        </div>}
+
         {/* {ChooseColor && <ColorPicker hideInput color={color} onChange={setColor} />} */}
 
         <div style={{ display: 'flex' }}>
           <div>
-            <div style={{ marginRight: 20,display:'flex' }}>
-              {ChoosebgColor && <h4 style={{marginRight:10}}>Picking Background Color : </h4>}
-              {ChoosefgColor && <h4 style={{marginRight:10}}> Picking Foreground Color : </h4>}
+            <div style={{ marginRight: 20, display: 'flex' }}>
+              {ChoosebgColor && <h4 style={{ marginRight: 10 }}>Picking Background Color : </h4>}
+              {ChoosefgColor && <h4 style={{ marginRight: 10 }}> Picking Foreground Color : </h4>}
               {ChoosebgColor && <ColorPicker hideInput={["rgb", "hsv"]} color={color} onChange={setColor} />}
               {ChoosefgColor && <ColorPicker hideInput={["rgb", "hsv"]} color={fgcolor} onChange={setfgColor} />}
             </div>
           </div>
           <div>
-            <div className="Mybanner" ref={DivRef} style={{ backgroundColor: color.hex, color: fgcolor.hex, padding: 15, maxHeight: "600px" }}>
-              <pre>{newText}</pre>
+            <div className="Mybanner" ref={DivRef} style={{ backgroundColor: color.hex, color: fgcolor.hex, padding: 15}}>
+              <pre style={{fontSize:fontSize}} >{newText}</pre>
             </div>
           </div>
         </div>
-        <button style={{marginTop:10}} onClick={handleCaptureClick}>Download</button>
+        <div>
+         <button style={{marginTop:10}}onClick={() => handleCaptureClick()}>Download</button>
+        </div>
+
       </div>
     </div>
   );
